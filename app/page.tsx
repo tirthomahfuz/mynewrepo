@@ -1,237 +1,171 @@
 import Link from "next/link";
-import { ArrowRight, Search, Sparkles, BookOpen, Shield, Users, CheckCircle } from "lucide-react";
-import IslamicPattern from "@/components/IslamicPattern";
-import ResourceCard from "@/components/ResourceCard";
-import { resources } from "@/lib/resources";
+import { ArrowRight, MapPin, Phone } from "lucide-react";
+import { resources, resourceTypeLabels } from "@/lib/resources";
+
+const stats = [
+  { value: resources.length.toString(), label: "Organizations" },
+  { value: "11", label: "Cities covered" },
+  { value: "Free", label: "Always" },
+  { value: "All", label: "Statuses welcome" },
+];
+
+const quickLinks = [
+  { label: "Refugee Claimants", desc: "Hearings, legal aid, settlement support" },
+  { label: "Permanent Residents", desc: "Rights, employment, family sponsorship" },
+  { label: "Work Permit Holders", desc: "Labour rights, permit renewals, status changes" },
+  { label: "No Status / Undocumented", desc: "Safe access to services and protections" },
+  { label: "Domestic Violence", desc: "Safety planning, legal protection, housing" },
+  { label: "Employment Issues", desc: "Unpaid wages, discrimination, wrongful dismissal" },
+];
+
+const featuredResources = resources.filter((r) =>
+  ["legal-aid-bc", "mosaic", "issbc", "access-pro-bono"].includes(r.id)
+);
 
 export default function HomePage() {
-  const featuredResources = resources.filter((r) =>
-    ["legal-aid-bc", "mosaic", "issbc"].includes(r.id)
-  );
-
   return (
-    <div className="flex flex-col">
+    <div className="max-w-6xl mx-auto px-5 sm:px-8 py-10">
+
       {/* Hero */}
-      <section className="relative bg-teal-800 text-white overflow-hidden">
-        <div className="absolute inset-0">
-          <IslamicPattern color="#ffffff" opacity={0.07} size={70} />
-        </div>
-        <div className="absolute inset-0 bg-gradient-to-br from-teal-900/80 via-teal-800/60 to-teal-700/40" />
-
-        <div className="relative max-w-6xl mx-auto px-4 sm:px-6 py-20 sm:py-28">
-          <div className="max-w-2xl">
-            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-1.5 text-sm font-medium mb-6">
-              <Sparkles className="w-3.5 h-3.5" />
-              Free · Confidential · AI-assisted
-            </div>
-
-            <h1 className="text-4xl sm:text-5xl font-bold leading-tight mb-6 text-balance">
-              Understand your rights.
-              <br />
-              <span className="text-teal-300">Find the right help.</span>
-            </h1>
-
-            <p className="text-lg text-teal-100 leading-relaxed mb-8 max-w-xl">
-              A free tool for refugees and immigrants in British Columbia. Tell us your situation and get plain-language guidance about your legal rights and the organizations that can help you.
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-3">
-              <Link
-                href="/intake"
-                className="inline-flex items-center justify-center gap-2 bg-white text-teal-800 font-semibold px-6 py-3 rounded-xl hover:bg-teal-50 transition-colors text-base shadow-lg"
-              >
-                Get help now
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-              <Link
-                href="/directory"
-                className="inline-flex items-center justify-center gap-2 bg-white/10 backdrop-blur-sm border border-white/30 text-white font-medium px-6 py-3 rounded-xl hover:bg-white/20 transition-colors text-base"
-              >
-                <Search className="w-4 h-4" />
-                Browse resources
-              </Link>
-            </div>
-          </div>
-        </div>
-
-        {/* Wave divider */}
-        <div className="absolute bottom-0 left-0 right-0">
-          <svg viewBox="0 0 1440 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M0 40H1440V20C1200 0 960 40 720 20C480 0 240 40 0 20V40Z" fill="#fafaf9" />
-          </svg>
-        </div>
-      </section>
-
-      {/* Trust bar */}
-      <section className="bg-stone-50 border-b border-stone-200">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-5">
-          <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
-            {[
-              "All immigration statuses welcome",
-              "No registration required",
-              "20+ BC organizations",
-              "Plain language explanations",
-            ].map((item) => (
-              <div key={item} className="flex items-center gap-2 text-sm text-stone-600">
-                <CheckCircle className="w-4 h-4 text-teal-600 shrink-0" />
-                {item}
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* How it works */}
-      <section className="py-20 bg-stone-50">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-stone-900 mb-3">
-              How it works
-            </h2>
-            <p className="text-stone-600 max-w-xl mx-auto">
-              Get personalized guidance in minutes — no appointment needed, no cost.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {[
-              {
-                icon: BookOpen,
-                step: "1",
-                title: "Tell us your situation",
-                description:
-                  "Describe what's happening in your own words — your immigration status, what you need help with, where you are in BC.",
-                color: "bg-teal-50 text-teal-700",
-              },
-              {
-                icon: Sparkles,
-                step: "2",
-                title: "Get AI-powered guidance",
-                description:
-                  "Our AI reviews your situation and provides plain-language explanations of your rights and options in BC.",
-                color: "bg-amber-50 text-amber-700",
-              },
-              {
-                icon: Users,
-                step: "3",
-                title: "Connect with the right support",
-                description:
-                  "Get a list of specific organizations that can help you, ranked by relevance with clear explanations of why each one matters.",
-                color: "bg-stone-100 text-stone-700",
-              },
-            ].map((item) => (
-              <div
-                key={item.step}
-                className="bg-white rounded-2xl p-6 border border-stone-200 relative"
-              >
-                <div className="absolute -top-3 -left-3 w-7 h-7 bg-teal-700 text-white text-xs font-bold rounded-full flex items-center justify-center shadow">
-                  {item.step}
-                </div>
-                <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 ${item.color}`}>
-                  <item.icon className="w-6 h-6" />
-                </div>
-                <h3 className="font-semibold text-stone-900 mb-2">{item.title}</h3>
-                <p className="text-sm text-stone-600 leading-relaxed">
-                  {item.description}
-                </p>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-10 text-center">
-            <Link
-              href="/intake"
-              className="inline-flex items-center gap-2 bg-teal-700 text-white font-semibold px-7 py-3.5 rounded-xl hover:bg-teal-600 transition-colors shadow-md"
-            >
-              Start now — it's free
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Islamic pattern divider */}
-      <div className="relative h-16 bg-stone-50 overflow-hidden">
-        <div className="absolute inset-0">
-          <IslamicPattern color="#0f766e" opacity={0.08} size={50} />
-        </div>
-        <div className="absolute inset-0 bg-gradient-to-r from-stone-50 via-transparent to-stone-50" />
-      </div>
-
-      {/* Key protections */}
-      <section className="py-20 bg-white">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <h2 className="text-3xl font-bold text-stone-900 mb-4">
-                You have rights in Canada — regardless of your status
-              </h2>
-              <p className="text-stone-600 leading-relaxed mb-6">
-                Many newcomers don't know that Canadian law protects them even before they become permanent residents or citizens. Understanding these rights can make a critical difference in your situation.
-              </p>
-              <ul className="space-y-3">
-                {[
-                  "Refugee claimants have the right to a fair hearing",
-                  "Everyone has the right to legal representation",
-                  "Workers have labour rights regardless of permit status",
-                  "Victims of crime can access supports without fear of deportation",
-                  "Children have the right to education in BC",
-                ].map((right) => (
-                  <li key={right} className="flex items-start gap-2.5 text-sm text-stone-700">
-                    <Shield className="w-4 h-4 text-teal-600 mt-0.5 shrink-0" />
-                    {right}
-                  </li>
-                ))}
-              </ul>
-              <Link
-                href="/intake"
-                className="inline-flex items-center gap-2 mt-6 text-teal-700 font-medium text-sm hover:text-teal-600"
-              >
-                Learn about your specific situation
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-            </div>
-
-            {/* Featured resources */}
-            <div className="space-y-3">
-              <h3 className="text-sm font-semibold text-stone-500 uppercase tracking-wider mb-4">
-                Featured organizations
-              </h3>
-              {featuredResources.map((r) => (
-                <ResourceCard key={r.id} resource={r} compact />
-              ))}
-              <Link
-                href="/directory"
-                className="block text-center text-sm text-teal-700 font-medium hover:text-teal-600 mt-2 py-2"
-              >
-                Browse all {resources.length} organizations →
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA banner */}
-      <section className="relative bg-amber-600 text-white overflow-hidden">
-        <div className="absolute inset-0">
-          <IslamicPattern color="#ffffff" opacity={0.08} size={55} />
-        </div>
-        <div className="relative max-w-4xl mx-auto px-4 sm:px-6 py-14 text-center">
-          <h2 className="text-2xl sm:text-3xl font-bold mb-4">
-            Not sure where to start?
-          </h2>
-          <p className="text-amber-100 mb-7 max-w-xl mx-auto text-base">
-            Tell us a little about your situation and we'll point you in the right direction — in plain language, for free.
-          </p>
+      <div className="mb-12">
+        <p className="text-sm font-medium text-ink-500 mb-3">British Columbia, Canada</p>
+        <h1 className="text-5xl sm:text-6xl font-bold text-ink-900 leading-tight mb-5 tracking-tight">
+          Legal help for<br />newcomers in BC
+        </h1>
+        <p className="text-lg text-ink-500 max-w-xl leading-relaxed mb-8">
+          Describe your situation and get plain-language guidance on your rights, along with the organizations best placed to help you.
+        </p>
+        <div className="flex flex-col sm:flex-row gap-3">
           <Link
             href="/intake"
-            className="inline-flex items-center gap-2 bg-white text-amber-700 font-semibold px-8 py-3.5 rounded-xl hover:bg-amber-50 transition-colors shadow-lg"
+            className="inline-flex items-center justify-center gap-2 bg-ink-900 text-white font-semibold px-6 py-3 rounded-full hover:bg-ink-800 transition-colors text-sm"
           >
-            Describe your situation
+            Get guidance now
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+          <Link
+            href="/directory"
+            className="inline-flex items-center justify-center gap-2 bg-white border border-black/10 text-ink-700 font-medium px-6 py-3 rounded-full hover:bg-cream-100 transition-colors text-sm"
+          >
+            Browse directory
+          </Link>
+        </div>
+      </div>
+
+      {/* Stats bar */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-12">
+        {stats.map((s) => (
+          <div key={s.label} className="bg-white/70 border border-black/6 rounded-2xl px-5 py-4">
+            <p className="text-3xl font-bold text-ink-900 tracking-tight">{s.value}</p>
+            <p className="text-sm text-ink-500 mt-0.5">{s.label}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* Main grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-12">
+
+        {/* Get help card */}
+        <div className="lg:col-span-1 bg-ink-900 text-white rounded-3xl p-6 flex flex-col justify-between min-h-56">
+          <div>
+            <p className="text-xs font-semibold text-white/50 uppercase tracking-wider mb-3">Start here</p>
+            <h2 className="text-2xl font-bold leading-snug mb-3">
+              Tell us what is happening
+            </h2>
+            <p className="text-sm text-white/60 leading-relaxed">
+              Answer a few questions and get matched with the right organizations and a summary of your rights.
+            </p>
+          </div>
+          <Link
+            href="/intake"
+            className="mt-6 inline-flex items-center gap-2 bg-gold-300 text-ink-900 font-semibold text-sm px-5 py-2.5 rounded-full hover:bg-gold-400 transition-colors w-fit"
+          >
+            Start now
             <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
-      </section>
+
+        {/* Common situations */}
+        <div className="lg:col-span-2 bg-white/70 border border-black/6 rounded-3xl p-6">
+          <p className="text-xs font-semibold text-ink-400 uppercase tracking-wider mb-4">Common situations</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {quickLinks.map((q) => (
+              <Link
+                key={q.label}
+                href="/intake"
+                className="group flex flex-col p-3 rounded-xl hover:bg-cream-200 transition-colors"
+              >
+                <p className="text-sm font-semibold text-ink-900 group-hover:text-ink-700 mb-0.5">{q.label}</p>
+                <p className="text-xs text-ink-400 leading-relaxed">{q.desc}</p>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Directory preview */}
+      <div className="mb-12">
+        <div className="flex items-center justify-between mb-5">
+          <h2 className="text-xl font-bold text-ink-900">Featured organizations</h2>
+          <Link href="/directory" className="text-sm font-medium text-ink-500 hover:text-ink-900 transition-colors">
+            View all {resources.length}
+          </Link>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {featuredResources.map((r) => (
+            <Link
+              key={r.id}
+              href={`/directory/${r.id}`}
+              className="bg-white/70 border border-black/6 rounded-2xl p-4 hover:shadow-card-hover hover:border-black/10 transition-all group"
+            >
+              <span className="text-xs font-medium bg-gold-100 text-gold-600 px-2 py-0.5 rounded-full">
+                {resourceTypeLabels[r.type]}
+              </span>
+              <h3 className="font-semibold text-ink-900 text-sm mt-3 mb-1 group-hover:text-ink-700 leading-snug">
+                {r.name}
+              </h3>
+              <p className="text-xs text-ink-400 flex items-center gap-1">
+                <MapPin className="w-3 h-3" />
+                {r.city}
+              </p>
+              <p className="text-xs text-ink-400 flex items-center gap-1 mt-0.5">
+                <Phone className="w-3 h-3" />
+                {r.phone}
+              </p>
+            </Link>
+          ))}
+        </div>
+      </div>
+
+      {/* How it works */}
+      <div className="bg-white/70 border border-black/6 rounded-3xl p-8">
+        <p className="text-xs font-semibold text-ink-400 uppercase tracking-wider mb-6">How it works</p>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {[
+            {
+              step: "01",
+              title: "Describe your situation",
+              desc: "Write in your own words what you are going through. No legal terms needed.",
+            },
+            {
+              step: "02",
+              title: "Review your rights",
+              desc: "Get a plain-language explanation of the legal protections that apply to your situation in BC.",
+            },
+            {
+              step: "03",
+              title: "Connect with support",
+              desc: "See the specific organizations that can help you, with a reason why each one fits your case.",
+            },
+          ].map((item) => (
+            <div key={item.step}>
+              <p className="text-3xl font-bold text-gold-400 mb-3">{item.step}</p>
+              <h3 className="font-semibold text-ink-900 mb-2">{item.title}</h3>
+              <p className="text-sm text-ink-500 leading-relaxed">{item.desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

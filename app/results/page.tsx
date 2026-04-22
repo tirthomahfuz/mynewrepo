@@ -3,53 +3,20 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import {
-  ArrowRight,
-  AlertCircle,
-  CheckCircle,
-  ChevronRight,
-  Printer,
-  RefreshCw,
-  BookOpen,
-  Shield,
-} from "lucide-react";
+import { ArrowRight, ChevronRight, Printer, RefreshCw } from "lucide-react";
 import type { IntakeData, GuidanceResponse } from "@/lib/types";
 import { getResourceById } from "@/lib/resources";
 import ResourceCard from "@/components/ResourceCard";
-import IslamicPattern from "@/components/IslamicPattern";
 
 function LoadingState() {
   return (
-    <div className="min-h-screen bg-stone-50 flex items-center justify-center">
+    <div className="min-h-screen flex items-center justify-center">
       <div className="text-center max-w-sm px-4">
-        <div className="relative w-16 h-16 mx-auto mb-6">
-          <div className="w-16 h-16 rounded-full border-4 border-teal-100 border-t-teal-600 animate-spin" />
-          <div className="absolute inset-0 flex items-center justify-center">
-            <Shield className="w-6 h-6 text-teal-600" />
-          </div>
-        </div>
-        <h2 className="text-lg font-semibold text-stone-900 mb-2">
-          Analyzing your situation…
-        </h2>
-        <p className="text-sm text-stone-500 leading-relaxed">
-          Our AI is reviewing your situation and identifying the most relevant rights, protections, and organizations for you. This takes about 10–15 seconds.
+        <div className="w-12 h-12 rounded-full border-4 border-black/10 border-t-ink-900 animate-spin mx-auto mb-6" />
+        <h2 className="text-lg font-semibold text-ink-900 mb-2">Analyzing your situation</h2>
+        <p className="text-sm text-ink-500 leading-relaxed">
+          Reviewing your situation, matching relevant organizations, and identifying your rights in BC. This takes about 15 seconds.
         </p>
-        <div className="mt-6 space-y-2">
-          {[
-            "Understanding your situation",
-            "Reviewing BC legal protections",
-            "Matching relevant organizations",
-          ].map((step, i) => (
-            <div
-              key={step}
-              className="flex items-center gap-2 text-sm text-stone-400 animate-pulse"
-              style={{ animationDelay: `${i * 0.4}s` }}
-            >
-              <div className="w-1.5 h-1.5 rounded-full bg-teal-400" />
-              {step}
-            </div>
-          ))}
-        </div>
       </div>
     </div>
   );
@@ -68,10 +35,8 @@ export default function ResultsPage() {
       router.push("/intake");
       return;
     }
-
     const intakeData: IntakeData = JSON.parse(stored);
     setIntake(intakeData);
-
     fetchGuidance(intakeData);
   }, [router]);
 
@@ -84,28 +49,15 @@ export default function ResultsPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(intakeData),
       });
-
       if (!response.ok) {
         const err = await response.json();
         throw new Error(err.error || "Failed to get guidance");
       }
-
-      const data: GuidanceResponse = await response.json();
-      setGuidance(data);
+      setGuidance(await response.json());
     } catch (err) {
-      setError(
-        err instanceof Error
-          ? err.message
-          : "Something went wrong. Please try again."
-      );
+      setError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
     } finally {
       setLoading(false);
-    }
-  }
-
-  function retry() {
-    if (intake) {
-      fetchGuidance(intake);
     }
   }
 
@@ -113,27 +65,19 @@ export default function ResultsPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-stone-50 flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center">
         <div className="text-center max-w-sm px-4">
-          <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <AlertCircle className="w-6 h-6 text-red-600" />
-          </div>
-          <h2 className="text-lg font-semibold text-stone-900 mb-2">
-            Something went wrong
-          </h2>
-          <p className="text-sm text-stone-500 mb-6">{error}</p>
+          <h2 className="text-lg font-semibold text-ink-900 mb-2">Something went wrong</h2>
+          <p className="text-sm text-ink-500 mb-6">{error}</p>
           <div className="flex flex-col gap-3">
             <button
-              onClick={retry}
-              className="flex items-center justify-center gap-2 bg-teal-700 text-white font-medium px-5 py-2.5 rounded-xl hover:bg-teal-600 transition-colors text-sm"
+              onClick={() => intake && fetchGuidance(intake)}
+              className="flex items-center justify-center gap-2 bg-ink-900 text-white font-medium px-5 py-2.5 rounded-full text-sm"
             >
               <RefreshCw className="w-4 h-4" />
               Try again
             </button>
-            <Link
-              href="/intake"
-              className="text-sm text-stone-600 hover:text-stone-900 underline"
-            >
+            <Link href="/intake" className="text-sm text-ink-500 hover:text-ink-900 underline">
               Start over
             </Link>
           </div>
@@ -144,7 +88,7 @@ export default function ResultsPage() {
 
   if (!guidance) return null;
 
-  const recommendedResourceObjects = guidance.recommendedResources
+  const recommendedResources = guidance.recommendedResources
     .map((rec) => ({
       resource: getResourceById(rec.resourceId),
       reason: rec.relevanceReason,
@@ -152,84 +96,51 @@ export default function ResultsPage() {
     .filter((item) => item.resource !== undefined);
 
   return (
-    <div className="min-h-screen bg-stone-50 py-10">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6">
+    <div className="py-10">
+      <div className="max-w-3xl mx-auto px-5 sm:px-8">
+
         {/* Header */}
         <div className="mb-8">
-          <div className="inline-flex items-center gap-2 bg-teal-50 text-teal-700 border border-teal-200 rounded-full px-3 py-1 text-xs font-medium mb-4">
-            <CheckCircle className="w-3.5 h-3.5" />
-            Guidance ready
-          </div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-stone-900 mb-2">
-            Your personalized guidance
+          <p className="text-xs font-semibold text-ink-400 uppercase tracking-wider mb-2">Your guidance</p>
+          <h1 className="text-3xl font-bold text-ink-900 tracking-tight">
+            Here is what we found
           </h1>
-          <p className="text-stone-600 text-sm">
-            Based on what you shared, here's what we think you need to know and do.
-          </p>
         </div>
 
-        {/* Situation Summary */}
-        <div className="bg-white rounded-2xl border border-stone-200 p-6 mb-5 shadow-sm">
-          <div className="flex items-center gap-2 mb-3">
-            <div className="w-8 h-8 bg-teal-100 rounded-lg flex items-center justify-center">
-              <BookOpen className="w-4 h-4 text-teal-700" />
-            </div>
-            <h2 className="font-semibold text-stone-900">
-              What we understand about your situation
-            </h2>
-          </div>
-          <p className="text-stone-700 leading-relaxed">
-            {guidance.situationSummary}
-          </p>
+        {/* Situation summary */}
+        <div className="bg-white/80 border border-black/6 rounded-3xl p-6 mb-4">
+          <p className="text-xs font-semibold text-ink-400 uppercase tracking-wider mb-3">Summary</p>
+          <p className="text-ink-700 leading-relaxed">{guidance.situationSummary}</p>
         </div>
 
-        {/* Rights Explained */}
-        <div className="relative bg-teal-800 text-white rounded-2xl p-6 mb-5 overflow-hidden shadow-sm">
-          <div className="absolute inset-0 opacity-40">
-            <IslamicPattern color="#ffffff" opacity={0.1} size={55} />
-          </div>
-          <div className="relative">
-            <div className="flex items-center gap-2 mb-3">
-              <div className="w-8 h-8 bg-white/15 rounded-lg flex items-center justify-center">
-                <Shield className="w-4 h-4 text-white" />
-              </div>
-              <h2 className="font-semibold text-white">
-                Your rights and protections
-              </h2>
-            </div>
-            <p className="text-teal-100 leading-relaxed text-sm">
-              {guidance.rightsExplained}
-            </p>
-          </div>
+        {/* Rights */}
+        <div className="bg-ink-900 text-white rounded-3xl p-6 mb-4">
+          <p className="text-xs font-semibold text-white/40 uppercase tracking-wider mb-3">Your rights in BC</p>
+          <p className="text-white/80 leading-relaxed text-sm">{guidance.rightsExplained}</p>
         </div>
 
-        {/* Next Steps */}
-        <div className="bg-white rounded-2xl border border-stone-200 p-6 mb-5 shadow-sm">
-          <h2 className="font-semibold text-stone-900 mb-4">
-            Recommended next steps
-          </h2>
+        {/* Next steps */}
+        <div className="bg-white/80 border border-black/6 rounded-3xl p-6 mb-4">
+          <p className="text-xs font-semibold text-ink-400 uppercase tracking-wider mb-4">Next steps</p>
           <ol className="space-y-3">
             {guidance.nextSteps.map((step, i) => (
               <li key={i} className="flex items-start gap-3">
-                <div className="w-6 h-6 bg-teal-700 text-white text-xs font-bold rounded-full flex items-center justify-center shrink-0 mt-0.5">
+                <span className="w-6 h-6 bg-gold-300 text-ink-900 text-xs font-bold rounded-full flex items-center justify-center shrink-0 mt-0.5">
                   {i + 1}
-                </div>
-                <p className="text-sm text-stone-700 leading-relaxed">{step}</p>
+                </span>
+                <p className="text-sm text-ink-700 leading-relaxed">{step}</p>
               </li>
             ))}
           </ol>
         </div>
 
-        {/* Recommended Resources */}
-        <div className="mb-5">
-          <h2 className="font-semibold text-stone-900 mb-1">
-            Organizations that can help you
-          </h2>
-          <p className="text-sm text-stone-500 mb-4">
-            These organizations were selected based on your location, status, and situation.
+        {/* Recommended resources */}
+        <div className="mb-4">
+          <p className="text-xs font-semibold text-ink-400 uppercase tracking-wider mb-4">
+            Organizations that can help
           </p>
           <div className="space-y-3">
-            {recommendedResourceObjects.map(({ resource, reason }) => (
+            {recommendedResources.map(({ resource, reason }) => (
               <ResourceCard
                 key={resource!.id}
                 resource={resource!}
@@ -240,34 +151,29 @@ export default function ResultsPage() {
         </div>
 
         {/* Disclaimer */}
-        <div className="bg-amber-50 border border-amber-200 rounded-2xl p-5 mb-8">
-          <div className="flex items-start gap-2.5">
-            <AlertCircle className="w-4 h-4 text-amber-600 mt-0.5 shrink-0" />
-            <p className="text-sm text-amber-800 leading-relaxed">
-              {guidance.disclaimer}
-            </p>
-          </div>
+        <div className="bg-cream-200 border border-gold-200 rounded-2xl p-5 mb-8">
+          <p className="text-sm text-ink-600 leading-relaxed">{guidance.disclaimer}</p>
         </div>
 
         {/* Actions */}
-        <div className="flex flex-col sm:flex-row gap-3 pb-8">
+        <div className="flex flex-wrap gap-3">
           <button
             onClick={() => window.print()}
-            className="flex items-center justify-center gap-2 border border-stone-300 text-stone-700 font-medium px-5 py-2.5 rounded-xl hover:bg-stone-100 transition-colors text-sm"
+            className="flex items-center gap-2 border border-black/10 bg-white/70 text-ink-700 font-medium px-5 py-2.5 rounded-full text-sm hover:bg-white transition-colors"
           >
             <Printer className="w-4 h-4" />
-            Print this guidance
+            Print
           </button>
           <Link
             href="/directory"
-            className="flex items-center justify-center gap-2 border border-stone-300 text-stone-700 font-medium px-5 py-2.5 rounded-xl hover:bg-stone-100 transition-colors text-sm"
+            className="flex items-center gap-2 border border-black/10 bg-white/70 text-ink-700 font-medium px-5 py-2.5 rounded-full text-sm hover:bg-white transition-colors"
           >
-            Browse all resources
+            All resources
             <ChevronRight className="w-4 h-4" />
           </Link>
           <Link
             href="/intake"
-            className="flex items-center justify-center gap-2 bg-teal-700 text-white font-medium px-5 py-2.5 rounded-xl hover:bg-teal-600 transition-colors text-sm ml-auto"
+            className="flex items-center gap-2 bg-ink-900 text-white font-medium px-5 py-2.5 rounded-full text-sm hover:bg-ink-800 transition-colors ml-auto"
           >
             New search
             <ArrowRight className="w-4 h-4" />

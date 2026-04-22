@@ -1,8 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, MapPin, Phone, Globe, Clock, Mail, CheckCircle, ArrowRight } from "lucide-react";
-import { resources, resourceTypeLabels, resourceTypeColors } from "@/lib/resources";
-import IslamicPattern from "@/components/IslamicPattern";
+import { resources, resourceTypeLabels } from "@/lib/resources";
 
 interface Props {
   params: { id: string };
@@ -16,7 +15,7 @@ export async function generateMetadata({ params }: Props) {
   const resource = resources.find((r) => r.id === params.id);
   if (!resource) return {};
   return {
-    title: `${resource.name} — Newcomer Legal Navigator BC`,
+    title: `${resource.name} — Legal Navigator BC`,
     description: resource.description,
   };
 }
@@ -30,70 +29,61 @@ export default function ResourceDetailPage({ params }: Props) {
     .slice(0, 3);
 
   return (
-    <div className="min-h-screen bg-stone-50">
-      {/* Hero */}
-      <div className="relative bg-teal-800 text-white overflow-hidden">
-        <div className="absolute inset-0">
-          <IslamicPattern color="#ffffff" opacity={0.06} size={60} />
-        </div>
-        <div className="relative max-w-4xl mx-auto px-4 sm:px-6 py-10">
-          <Link
-            href="/directory"
-            className="inline-flex items-center gap-2 text-teal-200 hover:text-white text-sm mb-5 transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Back to directory
-          </Link>
-          <span
-            className={`inline-block text-xs font-medium px-2.5 py-1 rounded-full mb-3 ${resourceTypeColors[resource.type]}`}
-          >
+    <div className="py-10">
+      <div className="max-w-4xl mx-auto px-5 sm:px-8">
+
+        {/* Back */}
+        <Link
+          href="/directory"
+          className="inline-flex items-center gap-2 text-sm text-ink-500 hover:text-ink-900 transition-colors mb-6"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Back to directory
+        </Link>
+
+        {/* Header */}
+        <div className="bg-ink-900 text-white rounded-3xl p-8 mb-5">
+          <span className="text-xs font-semibold text-white/40 uppercase tracking-wider">
             {resourceTypeLabels[resource.type]}
           </span>
-          <h1 className="text-2xl sm:text-3xl font-bold mb-2">{resource.name}</h1>
-          <p className="text-teal-200 flex items-center gap-1.5 text-sm">
-            <MapPin className="w-4 h-4" />
+          <h1 className="text-2xl sm:text-3xl font-bold mt-2 mb-2 tracking-tight">{resource.name}</h1>
+          <p className="text-white/50 text-sm flex items-center gap-1.5">
+            <MapPin className="w-3.5 h-3.5" />
             {resource.address}, {resource.city}, {resource.province}
           </p>
         </div>
-      </div>
 
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Main content */}
-          <div className="lg:col-span-2 space-y-5">
-            {/* Description */}
-            <div className="bg-white rounded-2xl border border-stone-200 p-6 shadow-sm">
-              <h2 className="font-semibold text-stone-900 mb-3">About this organization</h2>
-              <p className="text-stone-700 leading-relaxed">{resource.description}</p>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+
+          {/* Main */}
+          <div className="lg:col-span-2 space-y-4">
+            <div className="bg-white/80 border border-black/6 rounded-2xl p-6">
+              <p className="text-xs font-semibold text-ink-400 uppercase tracking-wider mb-3">About</p>
+              <p className="text-ink-700 leading-relaxed text-sm">{resource.description}</p>
             </div>
 
-            {/* Services */}
-            <div className="bg-white rounded-2xl border border-stone-200 p-6 shadow-sm">
-              <h2 className="font-semibold text-stone-900 mb-4">Services provided</h2>
+            <div className="bg-white/80 border border-black/6 rounded-2xl p-6">
+              <p className="text-xs font-semibold text-ink-400 uppercase tracking-wider mb-4">Services</p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 {resource.services.map((service) => (
                   <div key={service} className="flex items-start gap-2">
-                    <CheckCircle className="w-4 h-4 text-teal-600 mt-0.5 shrink-0" />
-                    <span className="text-sm text-stone-700">{service}</span>
+                    <CheckCircle className="w-3.5 h-3.5 text-gold-500 mt-0.5 shrink-0" />
+                    <span className="text-sm text-ink-700">{service}</span>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Eligibility */}
-            <div className="bg-white rounded-2xl border border-stone-200 p-6 shadow-sm">
-              <h2 className="font-semibold text-stone-900 mb-4">Who can access this service</h2>
+            <div className="bg-white/80 border border-black/6 rounded-2xl p-6">
+              <p className="text-xs font-semibold text-ink-400 uppercase tracking-wider mb-3">Who can access this</p>
               <div className="flex flex-wrap gap-2">
                 {resource.statusEligibility.includes("all") ? (
-                  <span className="bg-teal-50 text-teal-800 border border-teal-200 px-3 py-1.5 rounded-full text-sm font-medium">
-                    Open to everyone — all immigration statuses welcome
+                  <span className="bg-gold-100 text-gold-600 border border-gold-200 px-3 py-1.5 rounded-full text-sm font-medium">
+                    Open to all immigration statuses
                   </span>
                 ) : (
                   resource.statusEligibility.map((status) => (
-                    <span
-                      key={status}
-                      className="bg-stone-100 text-stone-700 px-3 py-1.5 rounded-full text-sm"
-                    >
+                    <span key={status} className="bg-cream-200 text-ink-600 px-3 py-1.5 rounded-full text-sm">
                       {status.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase())}
                     </span>
                   ))
@@ -101,15 +91,11 @@ export default function ResourceDetailPage({ params }: Props) {
               </div>
             </div>
 
-            {/* Languages */}
-            <div className="bg-white rounded-2xl border border-stone-200 p-6 shadow-sm">
-              <h2 className="font-semibold text-stone-900 mb-3">Languages available</h2>
+            <div className="bg-white/80 border border-black/6 rounded-2xl p-6">
+              <p className="text-xs font-semibold text-ink-400 uppercase tracking-wider mb-3">Languages</p>
               <div className="flex flex-wrap gap-2">
                 {resource.languages.map((lang) => (
-                  <span
-                    key={lang}
-                    className="bg-amber-50 text-amber-800 border border-amber-200 px-3 py-1 rounded-full text-sm"
-                  >
+                  <span key={lang} className="bg-cream-200 text-ink-600 px-3 py-1 rounded-full text-sm">
                     {lang}
                   </span>
                 ))}
@@ -117,51 +103,43 @@ export default function ResourceDetailPage({ params }: Props) {
             </div>
           </div>
 
-          {/* Contact sidebar */}
+          {/* Sidebar */}
           <div className="space-y-4">
-            <div className="bg-white rounded-2xl border border-stone-200 p-5 shadow-sm">
-              <h2 className="font-semibold text-stone-900 mb-4">Contact information</h2>
+            <div className="bg-white/80 border border-black/6 rounded-2xl p-5">
+              <p className="text-xs font-semibold text-ink-400 uppercase tracking-wider mb-4">Contact</p>
               <div className="space-y-3">
                 <div className="flex items-start gap-3">
-                  <MapPin className="w-4 h-4 text-stone-400 mt-0.5 shrink-0" />
+                  <MapPin className="w-4 h-4 text-ink-300 mt-0.5 shrink-0" />
                   <div>
-                    <p className="text-sm text-stone-700">{resource.address}</p>
-                    <p className="text-sm text-stone-700">
-                      {resource.city}, {resource.province}
-                    </p>
+                    <p className="text-sm text-ink-700">{resource.address}</p>
+                    <p className="text-sm text-ink-700">{resource.city}, {resource.province}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <Phone className="w-4 h-4 text-stone-400 shrink-0" />
-                  <a
-                    href={`tel:${resource.phone}`}
-                    className="text-sm text-teal-700 hover:text-teal-600 font-medium"
-                  >
+                  <Phone className="w-4 h-4 text-ink-300 shrink-0" />
+                  <a href={`tel:${resource.phone}`} className="text-sm text-ink-900 font-medium hover:text-ink-600">
                     {resource.phone}
                   </a>
                 </div>
                 {resource.email && (
                   <div className="flex items-center gap-3">
-                    <Mail className="w-4 h-4 text-stone-400 shrink-0" />
-                    <a
-                      href={`mailto:${resource.email}`}
-                      className="text-sm text-teal-700 hover:text-teal-600 truncate"
-                    >
+                    <Mail className="w-4 h-4 text-ink-300 shrink-0" />
+                    <a href={`mailto:${resource.email}`} className="text-sm text-ink-700 hover:text-ink-900 truncate">
                       {resource.email}
                     </a>
                   </div>
                 )}
                 <div className="flex items-start gap-3">
-                  <Clock className="w-4 h-4 text-stone-400 mt-0.5 shrink-0" />
-                  <p className="text-sm text-stone-700">{resource.hours}</p>
+                  <Clock className="w-4 h-4 text-ink-300 mt-0.5 shrink-0" />
+                  <p className="text-sm text-ink-700">{resource.hours}</p>
                 </div>
                 <div className="flex items-center gap-3">
-                  <Globe className="w-4 h-4 text-stone-400 shrink-0" />
+                  <Globe className="w-4 h-4 text-ink-300 shrink-0" />
                   <a
                     href={resource.website}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-sm text-teal-700 hover:text-teal-600 truncate"
+                    className="text-sm text-ink-700 hover:text-ink-900 truncate"
                   >
                     {resource.website.replace(/^https?:\/\//, "")}
                   </a>
@@ -172,7 +150,7 @@ export default function ResourceDetailPage({ params }: Props) {
                 href={resource.website}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-5 flex items-center justify-center gap-2 bg-teal-700 text-white text-sm font-medium px-4 py-2.5 rounded-xl hover:bg-teal-600 transition-colors w-full"
+                className="mt-5 flex items-center justify-center gap-2 bg-ink-900 text-white text-sm font-medium px-4 py-2.5 rounded-full hover:bg-ink-800 transition-colors w-full"
               >
                 Visit website
                 <ArrowRight className="w-4 h-4" />
@@ -180,52 +158,43 @@ export default function ResourceDetailPage({ params }: Props) {
             </div>
 
             {resource.urgencySupport && (
-              <div className="bg-red-50 border border-red-200 rounded-2xl p-4">
-                <p className="text-sm font-semibold text-red-800 mb-1">
-                  Urgent help available
-                </p>
-                <p className="text-xs text-red-700 leading-relaxed">
-                  This organization can help with urgent or time-sensitive situations.
+              <div className="bg-red-50 border border-red-100 rounded-2xl p-4">
+                <p className="text-sm font-semibold text-red-800 mb-1">Urgent support available</p>
+                <p className="text-xs text-red-600 leading-relaxed">
+                  This organization can help with time-sensitive situations.
                 </p>
               </div>
             )}
 
-            {/* CTA */}
-            <div className="bg-teal-50 border border-teal-200 rounded-2xl p-4">
-              <p className="text-sm font-semibold text-teal-900 mb-1.5">
-                Not sure if this is right for you?
-              </p>
-              <p className="text-xs text-teal-700 mb-3 leading-relaxed">
-                Tell us about your situation and we'll match you with the most relevant organizations.
+            <div className="bg-cream-200 border border-gold-200 rounded-2xl p-4">
+              <p className="text-sm font-semibold text-ink-900 mb-1.5">Not sure if this fits?</p>
+              <p className="text-xs text-ink-500 mb-3 leading-relaxed">
+                Describe your situation and we will match you with the right organizations.
               </p>
               <Link
                 href="/intake"
-                className="flex items-center justify-center gap-1.5 bg-teal-700 text-white text-xs font-medium px-3 py-2 rounded-lg hover:bg-teal-600 transition-colors"
+                className="flex items-center justify-center gap-1.5 bg-ink-900 text-white text-xs font-medium px-3 py-2 rounded-full hover:bg-ink-800 transition-colors"
               >
-                Get personalized guidance
+                Get guidance
                 <ArrowRight className="w-3.5 h-3.5" />
               </Link>
             </div>
           </div>
         </div>
 
-        {/* Similar resources */}
+        {/* Similar */}
         {similar.length > 0 && (
           <div className="mt-10">
-            <h2 className="font-semibold text-stone-900 mb-4">
-              Similar organizations
-            </h2>
+            <p className="text-xs font-semibold text-ink-400 uppercase tracking-wider mb-4">Similar organizations</p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {similar.map((r) => (
                 <Link
                   key={r.id}
                   href={`/directory/${r.id}`}
-                  className="bg-white rounded-2xl border border-stone-200 hover:border-teal-300 hover:shadow-sm transition-all p-4"
+                  className="bg-white/70 border border-black/6 rounded-2xl p-4 hover:shadow-card-hover transition-all"
                 >
-                  <p className="font-medium text-sm text-stone-900 mb-1">
-                    {r.name}
-                  </p>
-                  <p className="text-xs text-stone-500 flex items-center gap-1">
+                  <p className="font-medium text-sm text-ink-900 mb-1">{r.name}</p>
+                  <p className="text-xs text-ink-400 flex items-center gap-1">
                     <MapPin className="w-3 h-3" />
                     {r.city}
                   </p>
